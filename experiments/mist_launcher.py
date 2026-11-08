@@ -6,15 +6,21 @@ class Launcher(TmuxLauncher):
         return [
             # Command 0
             Options(
-                dataroot="datasets/MIST/HER2/TrainValAB",
+                dataroot="datasets/HER2/TrainValAB",
                 name="test",
+                # dataroot="datasets/HER2_filtered_25/TrainValAB",
+                # name='NCE_filtered_25',
+                # dataroot="datasets/HER2_filtered_15/TrainValAB",
+                # name='NCE_filtered_15_more_epochs',
                 checkpoints_dir='checkpoints',
                 model='cpt',
                 CUT_mode="FastCUT",
 
                 n_epochs=30,  # number of epochs with the initial learning rate
                 n_epochs_decay=10,  # number of epochs to linearly decay learning rate to zero
-
+                # n_epochs = 40,
+                # n_epochs_decay = 20,
+                            
                 netD='n_layers',  # ['basic', 'n_layers, 'pixel', 'patch'], 'specify discriminator architecture. The basic model is a 70x70 PatchGAN. n_layers allows you to specify the layers in the discriminator')
                 ndf=32,
                 netG='resnet_6blocks',  # ['resnet_9blocks', 'resnet_6blocks', 'unet_256', 'unet_128', 'stylegan2', 'smallstylegan2', 'resnet_cat'], 'specify generator architecture')
@@ -46,10 +52,10 @@ class Launcher(TmuxLauncher):
                 # no_flip='',
                 flip_equivariance=False,
                 display_winsize=512,  # display window size for both visdom and HTML
-                # display_id=0,
+                #display_id=0,
                 update_html_freq=100,
-                save_epoch_freq=5,
-                # print_freq=10,
+                save_epoch_freq=1,
+                #print_freq=1,
             ),
         ]
 

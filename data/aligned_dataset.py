@@ -64,6 +64,15 @@ class AlignedDataset(BaseDataset):
         A_path = self.A_paths[index]  # make sure index is within then range
         B_path = self.B_paths[index_B]
 
+        if A_path != B_path.replace('trainB', 'trainA').replace('valB', 'valA').replace('testB', 'testA'):
+            raise AssertionError(
+                f"\nASSERTION ERROR:\n"
+                f"  A_path: {A_path}\n"
+                f"  B_path: {B_path}\n"
+                f"  Expected A from B: {B_path.replace('trainB', 'trainA').replace('valB', 'valA').replace('testB', 'testA')}\n"
+                f"  Index: {index}, Index_B: {index_B}\n"
+                f"  A_size: {self.A_size}, B_size: {self.B_size}"
+            )
         assert A_path == B_path.replace('trainB', 'trainA').replace('valB', 'valA').replace('testB', 'testA')
 
         A_img = Image.open(A_path).convert('RGB')

@@ -3,7 +3,9 @@ import os
 import sys
 import ntpath
 import time
-from . import util, html
+# from . import util, html
+from . import util
+from . import html_util as html
 from subprocess import Popen, PIPE
 
 if sys.version_info[0] == 2:
@@ -61,7 +63,7 @@ class Visualizer():
         """
         self.opt = opt  # cache the option
         if opt.display_id is None:
-            self.display_id = np.random.randint(100000) * 10  # just a random display id
+            self.display_id = 42  # just a random display id
         else:
             self.display_id = opt.display_id
         self.use_html = opt.isTrain and not opt.no_html

@@ -1,6 +1,7 @@
 import os
 import random
 import torch
+import argparse
 import numpy as np
 from skimage import io
 from skimage.metrics import peak_signal_noise_ratio
@@ -12,8 +13,19 @@ from pytorch_fid.inception import InceptionV3
 
 from util.perceptual import PerceptualHashValue
 
-targ_dir = '/path/to/real_B'
-pred_dir = '/path/to/fake_B'
+parser = argparse.ArgumentParser()
+parser.add_argument('--epoch', type=str, default='latest', help="Which epoch test you want to evaluate")
+args = parser.parse_args()
+
+epoch_num = args.epoch
+targ_dir = f'/trinity/home/m.romanov/benchmarking/NCE/results/test/val_{epoch_num}/images/real_B'
+pred_dir = f'/trinity/home/m.romanov/benchmarking/NCE/results/test/val_{epoch_num}/images/fake_B'
+
+if not (os.path.isdir(targ_dir) and os.path.isdir(pred_dir)):
+    raise FileNotFoundError(f"Folders not found:\n  {targ_dir}\n  {pred_dir}")
+
+
+print(f"Evaluating epoch {args.epoch}")
 
 img_list = [f for f in os.listdir(pred_dir) if f.endswith(('png', 'jpg'))]
 img_format = '.' + img_list[0].split('.')[-1]
@@ -79,9 +91,13 @@ ssim = []
 for i in tqdm(img_list):
     fake = io.imread(os.path.join(pred_dir, i + img_format))
     real = io.imread(os.path.join(targ_dir, i + img_format))
+    if min(fake.shape[0], fake.shape[1]) < 7:
+        print(f"Skipping {i}: image too small for SSIM")
+        continue
+
     PSNR = peak_signal_noise_ratio(fake, real)
     psnr.append(PSNR)
-    SSIM = structural_similarity(fake, real, multichannel=True)
+    SSIM = structural_similarity(fake, real, channel_axis=-1)
     ssim.append(SSIM)
 average_psnr = sum(psnr)/len(psnr)
 average_ssim = sum(ssim)/len(ssim)

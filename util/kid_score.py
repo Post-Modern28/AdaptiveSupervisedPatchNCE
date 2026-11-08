@@ -1,9 +1,23 @@
 #!/usr/bin/env python3
 """Calculates the Kernel Inception Distance (KID) to evalulate GANs
 """
+import builtins
+import importlib
 import os
 import pathlib
 import sys
+if 'html' in sys.modules:
+    del sys.modules['html']
+try:
+    import html  
+    if not hasattr(html, "parser"):  
+        del sys.modules['html']
+        importlib.import_module("html")
+except Exception as e:
+    print("Warning: html import was broken, forcing stdlib reload:", e)
+    if 'html' in sys.modules:
+        del sys.modules['html']
+    importlib.import_module("html")
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 import numpy as np
